@@ -5,38 +5,24 @@ use advent_of_code_2022::Puzzle;
 const PUZZLE: Puzzle = Puzzle::new(1);
 
 fn part_one(inventories: &Vec<Vec<u32>>) -> Result<u32, Box<dyn Error>> {
-    let mut max = 0;
-    for inventory in inventories {
-        let mut total = 0;
-        for number in inventory {
-            total += number;
-        }
+    let mut totals: Vec<u32> = inventories
+        .iter()
+        .map(|inventory| inventory.iter().sum())
+        .collect();
+    totals.sort();
 
-        if total > max {
-            max = total;
-        }
-    }
-
-    Ok(max)
+    Ok(*totals.last().unwrap())
 }
 
 fn part_two(inventories: &Vec<Vec<u32>>) -> Result<u32, Box<dyn Error>> {
     let mut totals: Vec<u32> = inventories
         .iter()
-        .map(|inventory| {
-            let mut total = 0;
-            for number in inventory {
-                total += number;
-            }
-            total
-        })
+        .map(|inventory| inventory.iter().sum())
         .collect();
-
     totals.sort();
     totals.reverse();
 
-    let top_three_totals = totals.get(0).unwrap() + totals.get(1).unwrap() + totals.get(2).unwrap();
-    Ok(top_three_totals)
+    Ok(totals.iter().take(3).sum())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
