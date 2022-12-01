@@ -33,7 +33,7 @@ impl Puzzle {
         let client = Client::new();
         let request = client.get(url).header(COOKIE, session_cookie).build()?;
         let response = client.execute(request)?;
-        response.error_for_status()?;
+        response.error_for_status_ref()?;
 
         response.text()
     }
