@@ -5,12 +5,11 @@ use advent_of_code_2022::Puzzle;
 const PUZZLE: Puzzle = Puzzle::new(1);
 
 fn part_one(inventories: &Vec<Vec<u32>>) -> Result<u32, Box<dyn Error>> {
-    let totals: Vec<u32> = inventories
+    Ok(inventories
         .iter()
         .map(|inventory| inventory.iter().sum())
-        .collect();
-
-    Ok(totals.into_iter().max().unwrap())
+        .max()
+        .unwrap())
 }
 
 fn part_two(inventories: &Vec<Vec<u32>>) -> Result<u32, Box<dyn Error>> {
