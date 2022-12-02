@@ -9,8 +9,10 @@ mod cache {
 
     use directories::ProjectDirs;
 
+    #[derive(Debug)]
     pub enum File {
         SessionToken,
+        PuzzleInput { day: u8 },
     }
 
     fn get_file_path(file: &File) -> PathBuf {
@@ -19,6 +21,7 @@ mod cache {
         let mut cache_dir = project_dirs.cache_dir().to_owned();
         cache_dir.push(match file {
             File::SessionToken => String::from("session_token.txt"),
+            File::PuzzleInput { day } => format!("puzzle_input_day{day:02}.txt"),
         });
         fs::create_dir_all(cache_dir.parent().unwrap()).unwrap();
 
@@ -73,6 +76,11 @@ impl Puzzle {
     }
 
     pub fn get_input(&self) -> Result<String, reqwest::Error> {
+        let file = cache::File::PuzzleInput { day: self.day };
+        if let Some(puzzle_input) = cache::read_from_cache(&file) {
+            return Ok(puzzle_input);
+        }
+
         let url = format!(
             "https://adventofcode.com/{}/day/{}/input",
             self.year, self.day
@@ -84,6 +92,9 @@ impl Puzzle {
         let response = client.execute(request)?;
         response.error_for_status_ref()?;
 
-        response.text()
+        let puzzle_input = String::from(response.text()?.trim());
+        cache::write_to_cache(&file, &puzzle_input);
+
+        Ok(puzzle_input)
     }
 }
