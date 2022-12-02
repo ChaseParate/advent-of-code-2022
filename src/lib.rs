@@ -1,8 +1,57 @@
+use std::io::{self, Write};
+
 use reqwest::blocking::Client;
 use reqwest::header::COOKIE;
 
+mod cache {
+    use std::fs;
+    use std::path::PathBuf;
+
+    use directories::ProjectDirs;
+
+    pub enum File {
+        SessionToken,
+    }
+
+    fn get_file_path(file: &File) -> PathBuf {
+        let project_dirs = ProjectDirs::from("", "", env!("CARGO_PKG_NAME")).unwrap();
+
+        let mut cache_dir = project_dirs.cache_dir().to_owned();
+        cache_dir.push(match file {
+            File::SessionToken => String::from("session_token.txt"),
+        });
+        fs::create_dir_all(cache_dir.parent().unwrap()).unwrap();
+
+        cache_dir
+    }
+
+    pub fn read_from_cache(file: &File) -> Option<String> {
+        let file_path = get_file_path(file);
+        fs::read_to_string(file_path).ok()
+    }
+
+    pub fn write_to_cache(file: &File, data: &String) {
+        let path = get_file_path(file);
+        fs::write(path, data).expect("Unable to write to file");
+    }
+}
+
 fn get_session_token() -> String {
-    String::from(env!("SESSION_TOKEN"))
+    let file = cache::File::SessionToken;
+    if let Some(session_token) = cache::read_from_cache(&file) {
+        return session_token;
+    }
+
+    print!("Enter your Advent of Code session token: ");
+    io::stdout().flush().unwrap();
+
+    let mut buf = String::new();
+    io::stdin().read_line(&mut buf).unwrap();
+
+    let session_token = String::from(buf.trim());
+    cache::write_to_cache(&file, &session_token);
+
+    session_token
 }
 
 pub struct Puzzle {
