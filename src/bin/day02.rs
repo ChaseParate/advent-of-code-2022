@@ -4,7 +4,7 @@ use advent_of_code_2022::Puzzle;
 
 const PUZZLE: Puzzle = Puzzle::new(2);
 
-fn part_one(rounds: &Vec<(char, char)>) -> Result<u32, Box<dyn Error>> {
+fn part_one(rounds: &[(char, char)]) -> Result<u32, Box<dyn Error>> {
     let score = rounds
         .iter()
         .map(|(opponent_move, my_move)| {
@@ -29,7 +29,7 @@ fn part_one(rounds: &Vec<(char, char)>) -> Result<u32, Box<dyn Error>> {
     Ok(score)
 }
 
-fn part_two(rounds: &Vec<(char, char)>) -> Result<u32, Box<dyn Error>> {
+fn part_two(rounds: &[(char, char)]) -> Result<u32, Box<dyn Error>> {
     let score = rounds
         .iter()
         .map(|(opponent_move, result)| {
