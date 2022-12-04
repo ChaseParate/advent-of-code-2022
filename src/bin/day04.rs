@@ -41,18 +41,13 @@ fn main() -> Result<(), Box<dyn Error>> {
     let range_pairs: Vec<(RangeInclusive<u32>, RangeInclusive<u32>)> = puzzle_input
         .lines()
         .map(|line| {
-            let (first_range, second_range) = line.split_once(',').unwrap();
-            let first_range = first_range.split_once('-').unwrap();
-            let second_range = second_range.split_once('-').unwrap();
-
-            let first_left_bound: u32 = first_range.0.parse().unwrap();
-            let first_right_bound: u32 = first_range.1.parse().unwrap();
-            let second_left_bound: u32 = second_range.0.parse().unwrap();
-            let second_right_bound: u32 = second_range.1.parse().unwrap();
+            let (left, right) = line.split_once(',').unwrap();
+            let (left_start, left_end) = left.split_once('-').unwrap();
+            let (right_start, right_end) = right.split_once('-').unwrap();
 
             (
-                (first_left_bound..=first_right_bound),
-                (second_left_bound..=second_right_bound),
+                (left_start.parse().unwrap()..=left_end.parse().unwrap()),
+                (right_start.parse().unwrap()..=right_end.parse().unwrap()),
             )
         })
         .collect();
