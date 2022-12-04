@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::error::Error;
 
 use advent_of_code_2022::Puzzle;
@@ -19,32 +20,28 @@ fn part_one(rucksacks: &[String]) -> Result<u32, Box<dyn Error>> {
     for sack in rucksacks {
         let (first_half, second_half) = sack.split_at(sack.len() / 2);
 
-        let c1: Vec<char> = first_half.chars().collect();
-        let c2: Vec<char> = second_half.chars().collect();
+        let h1: HashSet<char> = first_half.chars().collect();
+        let h2: HashSet<char> = second_half.chars().collect();
 
-        for char in c1 {
-            if c2.contains(&char) {
-                sum += get_item_priority(&char);
-                break;
-            }
-        }
+        let intersection_char = h1.intersection(&h2).next().unwrap();
+        sum += get_item_priority(intersection_char);
     }
 
     Ok(sum)
 }
 
 fn part_two(rucksacks: &[String]) -> Result<u32, Box<dyn Error>> {
-    let mut iter = rucksacks.iter();
-
     let mut sum = 0;
 
+    let mut iter = rucksacks.iter();
     while let (Some(s1), Some(s2), Some(s3)) = (iter.next(), iter.next(), iter.next()) {
-        for char in s1.chars() {
-            if s2.chars().any(|x| x == char) && s3.chars().any(|x| x == char) {
-                sum += get_item_priority(&char);
-                break;
-            }
-        }
+        let h1: HashSet<char> = s1.chars().collect();
+        let h2: HashSet<char> = s2.chars().collect();
+        let h3: HashSet<char> = s3.chars().collect();
+
+        let intersection: HashSet<char> = h1.intersection(&h2).copied().collect();
+        let intersection_char = intersection.intersection(&h3).next().unwrap();
+        sum += get_item_priority(intersection_char);
     }
 
     Ok(sum)
