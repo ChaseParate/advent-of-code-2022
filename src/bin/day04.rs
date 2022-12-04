@@ -8,19 +8,18 @@ const PUZZLE: Puzzle = Puzzle::new(4);
 fn part_one(
     range_pairs: &[(RangeInclusive<u32>, RangeInclusive<u32>)],
 ) -> Result<u32, Box<dyn Error>> {
-    let mut sum = 0;
-    for (left, right) in range_pairs {
-        let left_bigger = left.size_hint() > right.size_hint();
+    let sum = range_pairs
+        .iter()
+        .filter(|(left, right)| {
+            let left_bigger = left.size_hint() > right.size_hint();
 
-        let smaller_range = if left_bigger { right } else { left };
-        let larger_range = if left_bigger { left } else { right };
+            let smaller_range = if left_bigger { right } else { left };
+            let larger_range = if left_bigger { left } else { right };
 
-        if larger_range.start() <= smaller_range.start()
-            && larger_range.end() >= smaller_range.end()
-        {
-            sum += 1
-        }
-    }
+            larger_range.start() <= smaller_range.start()
+                && larger_range.end() >= smaller_range.end()
+        })
+        .count() as u32;
 
     Ok(sum)
 }
@@ -28,12 +27,10 @@ fn part_one(
 fn part_two(
     range_pairs: &[(RangeInclusive<u32>, RangeInclusive<u32>)],
 ) -> Result<u32, Box<dyn Error>> {
-    let mut sum = 0;
-    for (left, right) in range_pairs {
-        if left.start() <= right.end() && right.start() <= left.end() {
-            sum += 1
-        }
-    }
+    let sum = range_pairs
+        .iter()
+        .filter(|(left, right)| left.start() <= right.end() && right.start() <= left.end())
+        .count() as u32;
 
     Ok(sum)
 }
