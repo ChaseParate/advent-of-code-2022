@@ -30,7 +30,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         .map(|inventory| {
             inventory
                 .lines()
-                .map(|num| num.parse::<u32>().unwrap())
+                .map(|num| num.parse().unwrap())
                 .collect()
         })
         .collect();
