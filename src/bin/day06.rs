@@ -4,46 +4,32 @@ use advent_of_code_2022::Puzzle;
 
 const PUZZLE: Puzzle = Puzzle::new(6);
 
-fn part_one(stream: &[char]) -> Result<u32, Box<dyn Error>> {
-    let window_size = 4;
-
-    for (index, window) in stream.windows(window_size).enumerate() {
-        let mut all_unique = true;
+fn get_index_of_unique_window(stream: &[char], window_size: usize) -> Option<usize> {
+    'main_loop: for (index, window) in stream.windows(window_size).enumerate() {
         for (i, char1) in window.iter().enumerate() {
             for char2 in &window[i + 1..] {
                 if char1 == char2 {
-                    all_unique = false;
+                    continue 'main_loop;
                 }
             }
         }
 
-        if all_unique {
-            return Ok((index + window_size) as u32);
-        }
+        return Some(index + window_size);
     }
 
-    Ok(0)
+    None
+}
+
+fn part_one(stream: &[char]) -> Result<u32, Box<dyn Error>> {
+    get_index_of_unique_window(stream, 4)
+        .map(|index| index as u32)
+        .ok_or_else(|| "Could not find index".into())
 }
 
 fn part_two(stream: &[char]) -> Result<u32, Box<dyn Error>> {
-    let window_size = 14;
-
-    for (index, window) in stream.windows(window_size).enumerate() {
-        let mut all_unique = true;
-        for (i, char1) in window.iter().enumerate() {
-            for char2 in &window[i + 1..] {
-                if char1 == char2 {
-                    all_unique = false;
-                }
-            }
-        }
-
-        if all_unique {
-            return Ok((index + window_size) as u32);
-        }
-    }
-
-    Ok(0)
+    get_index_of_unique_window(stream, 14)
+        .map(|index| index as u32)
+        .ok_or_else(|| "Could not find index".into())
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
