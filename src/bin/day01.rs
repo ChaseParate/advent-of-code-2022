@@ -27,12 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let puzzle_input = PUZZLE.get_input()?;
     let inventories: Vec<Vec<u32>> = puzzle_input
         .split("\n\n")
-        .map(|inventory| {
-            inventory
-                .lines()
-                .map(|num| num.parse().unwrap())
-                .collect()
-        })
+        .map(|inventory| inventory.lines().map(|num| num.parse().unwrap()).collect())
         .collect();
 
     println!("Part 1: {}", part_one(&inventories)?);
