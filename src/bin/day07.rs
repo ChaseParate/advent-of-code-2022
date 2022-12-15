@@ -16,7 +16,7 @@ enum File {
     Directory(String),
 }
 
-fn get_directory_size_map(commands: &[Command]) -> HashMap<Vec<&String>, u32> {
+fn create_directory_size_map(commands: &[Command]) -> HashMap<Vec<&String>, u32> {
     let mut current_directory = Vec::new();
     let mut filesystem = HashMap::new();
 
@@ -39,14 +39,14 @@ fn get_directory_size_map(commands: &[Command]) -> HashMap<Vec<&String>, u32> {
     for directory in filesystem.keys() {
         directory_size_map.insert(
             directory.clone(),
-            get_directory_size(&filesystem, directory),
+            calculate_directory_size(&filesystem, directory),
         );
     }
 
     directory_size_map
 }
 
-fn get_directory_size(
+fn calculate_directory_size(
     filesystem: &HashMap<Vec<&String>, &Vec<File>>,
     directory: &Vec<&String>,
 ) -> u32 {
@@ -59,7 +59,7 @@ fn get_directory_size(
             File::Directory(name) => {
                 let mut new_dir = directory.clone();
                 new_dir.push(name);
-                get_directory_size(filesystem, &new_dir)
+                calculate_directory_size(filesystem, &new_dir)
             }
         }
     }
@@ -68,7 +68,7 @@ fn get_directory_size(
 }
 
 fn part_one(commands: &[Command]) -> Result<u32, Box<dyn Error>> {
-    let directory_size_map = get_directory_size_map(commands);
+    let directory_size_map = create_directory_size_map(commands);
 
     let sum = directory_size_map
         .values()
@@ -79,7 +79,7 @@ fn part_one(commands: &[Command]) -> Result<u32, Box<dyn Error>> {
 }
 
 fn part_two(commands: &[Command]) -> Result<u32, Box<dyn Error>> {
-    let directory_size_map = get_directory_size_map(commands);
+    let directory_size_map = create_directory_size_map(commands);
 
     let root = String::from('/');
     let root_path = vec![&root];
