@@ -12,16 +12,16 @@ fn part_one(data: &[Vec<u32>]) -> Result<u32, Box<dyn Error>> {
             let tree = data[y][x];
 
             let mut visible_up = true;
-            for y_scan in 0..y {
-                if tree <= data[y_scan][x] {
+            for row in data.iter().take(y) {
+                if tree <= row[x] {
                     visible_up = false;
                     break;
                 }
             }
 
             let mut visible_down = true;
-            for y_scan in y + 1..data.len() {
-                if tree <= data[y_scan][x] {
+            for row in data.iter().skip(y + 1) {
+                if tree <= row[x] {
                     visible_down = false;
                     break;
                 }
@@ -60,17 +60,17 @@ fn part_two(data: &[Vec<u32>]) -> Result<u32, Box<dyn Error>> {
             let tree = data[y][x];
 
             let mut distance_up = 0;
-            for y_scan in (0..y).rev() {
+            for row in data.iter().take(y).rev() {
                 distance_up += 1;
-                if tree <= data[y_scan][x] {
+                if tree <= row[x] {
                     break;
                 }
             }
 
             let mut distance_down = 0;
-            for y_scan in y + 1..data.len() {
+            for row in data.iter().skip(y + 1) {
                 distance_down += 1;
-                if tree <= data[y_scan][x] {
+                if tree <= row[x] {
                     break;
                 }
             }
